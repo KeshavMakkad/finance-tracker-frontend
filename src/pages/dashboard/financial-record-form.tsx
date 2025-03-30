@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useUser } from "@clerk/clerk-react";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import "./financial-record.css";
 
@@ -17,8 +16,7 @@ export const FinancialRecordForm = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { addRecord } = useFinancialRecords();
-  const { user } = useUser();
+  const { addRecord, userId } = useFinancialRecords(); // Get userId from context
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,9 +38,14 @@ export const FinancialRecordForm = () => {
       return;
     }
 
+    if (!userId) {
+      setErrorMessage("User ID is missing.");
+      return;
+    }
+
     // Create a new record
     const newRecord = {
-      userId: user?.id ?? "",
+      userId, // Use userId from context
       date: new Date(),
       description: description.trim(),
       amount: parseFloat(amount),
@@ -128,4 +131,3 @@ export const FinancialRecordForm = () => {
     </div>
   );
 };
-  
