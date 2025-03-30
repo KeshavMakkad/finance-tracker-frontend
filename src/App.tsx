@@ -1,6 +1,11 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Dashboard } from "./pages/dashboard";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    Navigate,
+} from "react-router-dom";
 import { Auth } from "./pages/auth";
 import { FinancialRecordsProvider } from "./contexts/financial-record-context";
 import {
@@ -9,31 +14,77 @@ import {
     SignedOut,
     SignInButton,
 } from "@clerk/clerk-react";
-// import { dark } from "@clerk/themes";
+import { FinancialRecordForm } from "./pages/dashboard/financial-record-form";
+import { FinancialRecordList } from "./pages/dashboard/financial-record-list";
+import FinancialAdvice from "./pages/dashboard/financial-advice";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <div className="navbar">
-                    <Link to="/"> Dashboard</Link>
-                    <SignedIn>
-                        <UserButton />
-                    </SignedIn>
-                    <SignedOut>
-                        <SignInButton />
-                    </SignedOut>
+                    {/* Left-aligned navigation buttons */}
+                    <div className="nav-links">
+                        <SignedIn>
+                            <Link to="/add">
+                                <button className="nav-button">
+                                    Add Finance
+                                </button>
+                            </Link>
+                            <Link to="/view">
+                                <button className="nav-button">
+                                    See Finances
+                                </button>
+                            </Link>
+                            <Link to="/advice">
+                                <button className="nav-button">
+                                    Get Personalized Advice
+                                </button>
+                            </Link>
+                        </SignedIn>
+                    </div>
+
+                    {/* Right-aligned profile/user button */}
+                    <div className="user-container">
+                        <SignedIn>
+                            <UserButton />
+                        </SignedIn>
+                        <SignedOut>
+                            <div className="sign-in-button-container">
+                                <SignInButton mode="modal" />
+                            </div>
+                        </SignedOut>
+                    </div>
                 </div>
+
                 <Routes>
+                    {/* Redirect root ("/") to "/add" */}
+                    <Route path="/" element={<Navigate to="/add" />} />
+                    <Route path="/auth" element={<Auth />} />
                     <Route
-                        path="/"
+                        path="/add"
                         element={
                             <FinancialRecordsProvider>
-                                <Dashboard />
+                                <FinancialRecordForm />
                             </FinancialRecordsProvider>
                         }
                     />
-                    <Route path="/auth" element={<Auth />} />
+                    <Route
+                        path="/view"
+                        element={
+                            <FinancialRecordsProvider>
+                                <FinancialRecordList />
+                            </FinancialRecordsProvider>
+                        }
+                    />
+                    <Route
+                        path="/advice"
+                        element={
+                            <FinancialRecordsProvider>
+                                <FinancialAdvice />
+                            </FinancialRecordsProvider>
+                        }
+                    />
                 </Routes>
             </div>
         </Router>

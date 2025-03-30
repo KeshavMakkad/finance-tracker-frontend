@@ -4,6 +4,7 @@ import { FinancialRecordList } from "./financial-record-list";
 import "./financial-record.css";
 import { useFinancialRecords } from "../../contexts/financial-record-context";
 import { useMemo } from "react";
+
 export const Dashboard = () => {
   const { user } = useUser();
   const { records } = useFinancialRecords();
@@ -23,6 +24,7 @@ export const Dashboard = () => {
       <FinancialRecordForm />
       <div>Total Monthly: ${totalMonthly}</div>
       <FinancialRecordList />
+      
     </div>
   );
 };

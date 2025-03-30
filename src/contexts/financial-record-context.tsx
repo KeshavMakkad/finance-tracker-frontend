@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { createContext, useContext, useEffect, useState } from "react";
 
-const BACKEND_URL = "https://finance-tracker-backend-zb6x.onrender.com";
+const BACKEND_URL = "http://localhost:3000";
 
 export interface FinancialRecord {
     _id?: string;
@@ -34,17 +34,25 @@ export const FinancialRecordsProvider = ({
 
     const fetchRecords = async () => {
         if (!user) return;
-        const response = await fetch(
-            `${BACKEND_URL}/financial-records/getAllByUserID/${user.id}`
-        );
-
-        if (response.ok) {
+        try {
+            const response = await fetch(
+                `${BACKEND_URL}/financial-records/getAllByUserID/${user.id}`
+            );
+            console.log("Helloo")
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            console.log(response)
+    
             const records = await response.json();
             console.log(records);
             setRecords(records);
+        } catch (error) {
+            console.error("Error fetching records:", error);
         }
     };
-
+    
     useEffect(() => {
         fetchRecords();
     }, [user]);
@@ -63,7 +71,9 @@ export const FinancialRecordsProvider = ({
                 const newRecord = await response.json();
                 setRecords((prev) => [...prev, newRecord]);
             }
-        } catch (err) {}
+        } catch (err) {
+            console.error(err)
+        }
     };
 
     const updateRecord = async (id: string, newRecord: FinancialRecord) => {
@@ -103,7 +113,9 @@ export const FinancialRecordsProvider = ({
                     prev.filter((record) => record._id !== deletedRecord._id)
                 );
             }
-        } catch (err) {}
+        } catch (err) {
+
+        }
     };
 
     return (
