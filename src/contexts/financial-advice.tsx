@@ -1,6 +1,7 @@
 export const fetchFinancialAdvice = async (expenses: any): Promise<{ generated_text: string }[] | undefined> => {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     try {
-        const response = await fetch("http://localhost:3000/api/getFinancialAdvice", {
+        const response = await fetch(`${BACKEND_URL}/api/getFinancialAdvice`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ expenses }),
